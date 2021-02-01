@@ -6,8 +6,8 @@
 //    - leg
 //    - plug
 
-use <../lib/chrisspen_gears/gears.scad>;
-use <../lib/mylib.scad>;
+use <./lib/chrisspen_gears/gears.scad>;
+use <./lib/mylib.scad>;
 
 e=0.01;
 color_orange=[255/255, 165/255, 0/255];
