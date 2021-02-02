@@ -17,6 +17,8 @@ def parts = [
     'driver_leg',
     'y_gear_plug',
     'y_bearing_plug',
+    'pcb_bottom_spacer',
+    'pcb_middle_spacer',
     'test_voltage_plug',
 ]
 

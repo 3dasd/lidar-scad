@@ -14,8 +14,7 @@ color_orange=[255/255, 165/255, 0/255];
 
 $fn=30;
 
-part="test_voltage_plug";
-
+part="pcb_middle_spacer";
 
 //
 // BEGINNING OF PARAMETER DEFINITIONS
@@ -75,6 +74,8 @@ $main_pcb_y = 72;
 $main_pcb_hole_dist = 65;
 $main_pcb_hole_offset_x = 4.2; // distance of top-left hole (center) from the left
 $main_pcb_hole_offset_y = 3.5; // distance of top-left hole (center) from the top
+$main_pcb_bottom_spacer_h = 6; // distance between plate and main PCB
+$main_pcb_middle_spacer_h = 3; // distance between RPi and main PCB
 
 $plug_pcb_x = 23;
 $plug_pcb_y = 11;
@@ -267,6 +268,8 @@ if (part == "x_driver_gear") driver_gear(tooth_number=$xdriver_tooth_num, invert
 if (part == "y_driver_gear") driver_gear(tooth_number=$ydriver_tooth_num, inverted=true);
 if (part == "y_gear_plug") ygear_plug_m4();
 if (part == "y_bearing_plug") ybearing_plug_m4();
+if (part == "pcb_bottom_spacer") pcb_bottom_spacer();
+if (part == "pcb_middle_spacer") pcb_middle_spacer();
 if (part == "y_gear") y_gear();
 if (part == "idle_leg") idle_leg();
 if (part == "driver_leg") driver_leg();
@@ -1067,7 +1070,7 @@ module ygear_plug_m4(in_place = false) {
     
     translate(in_place_translate)
     rotate(in_place_rotate)
-    plug(h=$gear_h, gap=2*$s5);
+    plug_m4(h=$gear_h);
 }
 
 module ybearing_plug_m4(in_place = false) {
@@ -1076,19 +1079,54 @@ module ybearing_plug_m4(in_place = false) {
 
     translate(in_place_translate)
     rotate(in_place_rotate)
-    plug(h=$ybearing_h, gap=2*$s5);
+    plug_m4(h=$ybearing_h);
 }
 
-module plug(h=$ybearing_h, gap=$s5) {
+module plug_m4(h=$ybearing_h) {
     ledge=($ybearing_outer_d-$ybearing_inner_d)/2/3;
     
-    translate([0, 0, -h/2-gap])
+    spacer(
+        h=h,
+        inner_d=$m4_body_d+2*$s3,
+        outer_d=$ybearing_inner_d - $s2,
+        ledge=ledge,
+        ledge_h=2*$s5);
+}
+
+module pcb_bottom_spacer() {
+    spacer_m2(h=$main_pcb_bottom_spacer_h);
+}
+
+module pcb_middle_spacer() {
+    spacer_m2(h=$main_pcb_middle_spacer_h);
+}
+
+module spacer_m2(h=5) {
+    spacer(
+        h=h,
+        inner_d=$m2_body_d + 2*$s2,
+        outer_d=$m2_body_d + 2*$s2 + 2*$h3,
+        ledge=0
+    );
+}
+
+module spacer(
+    h=$ybearing_h,
+    inner_d=$m4_body_d+2*$s3,
+    outer_d=$ybearing_inner_d - $s2,
+    
+    ledge=0,
+    ledge_h=$s5
+) {
     difference() {
         union() {
-            cylinder(d=$ybearing_inner_d - $s2, h=h + gap);
-            cylinder(d=$ybearing_inner_d+2*ledge, h=gap);
+            cylinder(d=outer_d, h=h, center=true);
+            if (ledge > 0) {
+                translate([0, 0, -h/2-ledge_h])
+                cylinder(d=outer_d+2*ledge, h=ledge_h);
+            }
         }
-        cylinder(d=$m4_body_d+2*$s3, h=100, center=true);
+        cylinder(d=inner_d, h=100, center=true);
     }
 }
 
