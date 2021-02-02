@@ -17,6 +17,7 @@ def parts = [
     'driver_leg',
     'y_gear_plug',
     'y_bearing_plug',
+    'test_voltage_plug',
 ]
 
 task allStl() {}

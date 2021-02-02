@@ -14,7 +14,7 @@ color_orange=[255/255, 165/255, 0/255];
 
 $fn=30;
 
-part="stand";
+part="test_voltage_plug";
 
 
 //
@@ -272,6 +272,9 @@ if (part == "idle_leg") idle_leg();
 if (part == "driver_leg") driver_leg();
 if (part == "mount") mount();
 
+// Test-fit parts
+if (part == "test_voltage_plug") test_voltage_plug();
+
 module base_station() {
     color("blue")
     station_blue(in_place=true);
@@ -305,7 +308,6 @@ module stand() {
     % lidar(in_place=true);
     % ybearings();
 }
-
 
 module hall_hole() {
     h=$h1m3;
@@ -1174,26 +1176,43 @@ module pcb_hole(nut_slack=$s3) {
 module voltage_plug(in_place=false) {
     in_place_translation = in_place ? [0, 0, 2*$h3+e] : [0, 0, 0];
     in_place_rotation = in_place ? [0, 0, 135] : [0, 0, 0];
+    x=$plug_pcb_x+2*$s3;
+    y=$plug_pcb_y+2*$s3;
     
     rotate(in_place_rotation)
     translate(in_place_translation)
     translate([0, 0, $plug_pcb_leg_z])
     union() {
-        translate([-$plug_pcb_x/2 - 2*$h3 + $w5/2 , 0, 0])
+        translate([-x/2 - 2*$h3 + $w5/2 , 0, 0])
         {
             // PCB
             translate([0, 0, -$plug_pcb_pcb_z/2+e])
-            cube([$plug_pcb_x, $plug_pcb_y, $plug_pcb_pcb_z], center=true);
+            cube([x, y, $plug_pcb_pcb_z], center=true);
             
             
             // Legs
             translate([0, 0, -$plug_pcb_leg_z/2])
-            cube([$plug_pcb_x-2*$plug_pcb_leg_offset, $plug_pcb_y-2*$plug_pcb_leg_offset, $plug_pcb_leg_z], center=true);
+            cube([x-2*$plug_pcb_leg_offset, y-2*$plug_pcb_leg_offset, $plug_pcb_leg_z], center=true);
         }
         
         
         // Plug
-        translate([0, -$plug_pcb_plug_y/2, 0])
-        cube([$w5, $plug_pcb_plug_y, $plug_pcb_plug_z]);
+        translate([0, -y/2, 0])
+        cube([$w5, y, $plug_pcb_plug_z]);
+    }
+}
+
+module test_voltage_plug() {
+    wall=2*2;
+    x=$plug_pcb_x+wall;
+    y=$plug_pcb_y+wall;
+    z=$plug_pcb_plug_z+$plug_pcb_leg_z+wall/2;
+    
+    difference() {
+        translate([-x/2 - 2*$h3 + $w5/2 - x/2 + wall/2 , 0, 0])
+        translate([0, -y/2, -wall/2-e])
+        cube([x, y, z]);
+        
+        voltage_plug();
     }
 }
