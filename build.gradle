@@ -22,7 +22,12 @@ def parts = [
     'test_voltage_plug',
 ]
 
-task allStl() {}
+task allStl(type: Zip) {
+    from outputDir
+    include '*'
+    archiveName 'all-stl.zip'
+    destinationDir(file('.'))
+}
 
 parts.each { part ->
     println "found part: ${part}"
