@@ -1,0 +1,22 @@
+on: [push]
+
+jobs:
+  openscad_releaser_job:
+    runs-on: ubuntu-latest
+    name: Build STLs and release on new tags.
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          submodules: true
+      - name: Run openscad-builder
+        uses: dvoros/openscad-builder@v1
+      - name: Release
+        uses: softprops/action-gh-release@v1
+        if: startsWith(github.ref, 'refs/tags/')
+        with:
+          files: |
+            stl/*
+            all-stl.zip
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
