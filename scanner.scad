@@ -14,7 +14,7 @@ color_orange=[255/255, 165/255, 0/255];
 
 $fn=30;
 
-part="pcb_middle_spacer";
+part="test_nuts_and_bolts";
 
 //
 // BEGINNING OF PARAMETER DEFINITIONS
@@ -277,6 +277,7 @@ if (part == "mount") mount();
 
 // Test-fit parts
 if (part == "test_voltage_plug") test_voltage_plug();
+if (part == "test_nuts_and_bolts") test_nuts_and_bolts();
 
 module base_station() {
     color("blue")
@@ -846,6 +847,19 @@ module m3_nut_pocket(z=0) {
     }
 }
 
+module m2_nut_pocket(z=0) {
+    translate([0, 0, z])
+    union() {
+        cylinder(d=$m2_body_d+2*$s2, h=1000, center=true);
+        
+        translate([0, 0, -500])
+        hexagon(
+            ($m2_nut_d+$s3)/2,
+            500
+        );
+    }
+}
+
 module xbearing() {
     translate([0, 0, -e])
     difference() {
@@ -1186,7 +1200,7 @@ module motor_holes() {
     
 }
 
-module pcb_holes(nut_slack=$s3) {
+module pcb_holes() {
     offset_by_default_x = ($main_pcb_x - $main_pcb_hole_dist) / 2;
     offset_by_default_y = ($main_pcb_y - $main_pcb_hole_dist) / 2;
     
@@ -1194,21 +1208,12 @@ module pcb_holes(nut_slack=$s3) {
     mirror_x()
     mirror_y()
     translate([$main_pcb_hole_dist/2, $main_pcb_hole_dist/2, 0])
-    pcb_hole(nut_slack=nut_slack);
+    pcb_hole();
 }
 
-module pcb_hole(nut_slack=$s3) {
-    union() {
-        // body of bolt
-        cylinder(d=$m2_body_d + 2*$s2, h=$green_h*3, center=true);
-        
-        // nut pocket
-        translate([0, 0, $m2_nut_h])
-        hexagon(
-            ($m2_nut_d+nut_slack)/2,
-            $green_h
-        );
-    }
+module pcb_hole() {
+    mirror([0, 0, 1])
+    m2_nut_pocket(z=-$m2_nut_h+$s2);
 }
 
 module voltage_plug(in_place=false) {
@@ -1254,3 +1259,30 @@ module test_voltage_plug() {
         voltage_plug();
     }
 }
+
+module test_nuts_and_bolts() {
+    h=6;
+    dist=10;
+    
+    difference() {
+        translate([-dist/2, -dist/2, 0])
+        cube([3*dist, 2*dist, h]);
+        
+        translate([dist, 0, 0])
+        m3_head_pocket(z=h - $m3_head_h - $s2);
+        translate([2*dist, 0, 0])
+        m4_head_pocket(z=h - $m4_head_h - $s2);
+        
+        translate([0, dist, h - $m2_nut_h - $s2])
+        mirror([0, 0, 1])
+        m2_nut_pocket(z=0);
+        translate([dist, dist, h - $m3_nut_h - $s2])
+        mirror([0, 0, 1])
+        m3_nut_pocket(z=0);
+        translate([2*dist, dist, h - $m4_nut_h - $s2])
+        mirror([0, 0, 1])
+        m4_nut_pocket(z=0);
+    }
+
+}
+

@@ -19,6 +19,7 @@ def parts = [
     'y_bearing_plug',
     'pcb_bottom_spacer',
     'pcb_middle_spacer',
+    'test_nuts_and_bolts',
     'test_voltage_plug',
 ]
 
