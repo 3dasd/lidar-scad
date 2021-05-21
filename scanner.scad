@@ -75,7 +75,6 @@ $main_pcb_hole_dist = 65;
 $main_pcb_hole_offset_x = 4.2; // distance of top-left hole (center) from the left
 $main_pcb_hole_offset_y = 3.5; // distance of top-left hole (center) from the top
 $main_pcb_bottom_spacer_h = 6; // distance between plate and main PCB
-$main_pcb_middle_spacer_h = 3; // distance between RPi and main PCB
 
 $plug_pcb_x = 23;
 $plug_pcb_y = 11;
@@ -269,7 +268,6 @@ if (part == "y_driver_gear") driver_gear(tooth_number=$ydriver_tooth_num, invert
 if (part == "y_gear_plug") ygear_plug_m4();
 if (part == "y_bearing_plug") ybearing_plug_m4();
 if (part == "pcb_bottom_spacer") pcb_bottom_spacer();
-if (part == "pcb_middle_spacer") pcb_middle_spacer();
 if (part == "y_gear") y_gear();
 if (part == "idle_leg") idle_leg();
 if (part == "driver_leg") driver_leg();
@@ -1109,10 +1107,6 @@ module plug_m4(h=$ybearing_h) {
 
 module pcb_bottom_spacer() {
     spacer_m2(h=$main_pcb_bottom_spacer_h);
-}
-
-module pcb_middle_spacer() {
-    spacer_m2(h=$main_pcb_middle_spacer_h);
 }
 
 module spacer_m2(h=5) {
