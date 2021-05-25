@@ -1276,6 +1276,10 @@ module test_nuts_and_bolts() {
         translate([2*dist, dist, h - $m4_nut_h - $s2])
         mirror([0, 0, 1])
         m4_nut_pocket(z=0);
+        
+        translate([0, 0, h+e])
+        mirror([0, 0, 1])
+        magnet_slot();
     }
 
 }
