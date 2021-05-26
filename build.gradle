@@ -19,7 +19,6 @@ def parts = [
     'y_bearing_plug',
     'pcb_bottom_spacer',
     'test_nuts_and_bolts',
-    'test_voltage_plug',
 ]
 
 task allStl(type: Zip) {
