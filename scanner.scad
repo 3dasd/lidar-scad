@@ -9,16 +9,104 @@
 use <./lib/chrisspen_gears/gears.scad>;
 use <./lib/mylib.scad>;
 
-e=0.01;
-color_orange=[255/255, 165/255, 0/255];
 
-$fn=30;
 
-part="test_nuts_and_bolts";
+/* [part selection] */
+// Which part to generate.
+part="test_nuts_and_bolts"; // [test_nuts_and_bolts, pink, purple, orange, green, blue, x_driver_gear, y_driver_gear, y_gear, mount, idle_leg, driver_leg, y_gear_plug, y_bearing_plug, pcb_bottom_spacer]
 
 //
 // BEGINNING OF PARAMETER DEFINITIONS
 //
+
+/* [x-bearing] */
+// Parameters of bearing responsible for horizontal rotation of the plate
+
+// Inner diameter (bore diameter). [mm]
+$xbearing_inner_d = 50;
+// Outer diameter. [mm]
+$xbearing_outer_d = 72;
+// Width. [mm]
+$xbearing_h = 12;
+
+/* [y-bearing] */
+// Parameters of bearing responsible for vertical rotation of the LIDAR mount
+
+// Inner diameter (bore diameter). [mm]
+$ybearing_inner_d = 6;
+// Outer diameter. [mm]
+$ybearing_outer_d = 13;
+// Width. [mm]
+$ybearing_h = 5;
+
+/* [M2 nut+bolt parameters] */
+// All these need at least a tight fit slack (0.2)
+// on their diameter to make a socket
+
+// Bolt nominal diameter. [mm]
+$m2_body_d = 2.0;
+// Head diameter. [mm]
+$m2_head_d = 4;
+// Head height. [mm]
+$m2_head_h = 1.8;
+// Nut diameter across flats. [mm]
+$m2_nut_square = 4;
+// Nut diameter across corners. [mm]
+$m2_nut_d = 4.6; // ~= $m2_nut_square / cos(30)
+// Nut height. [mm]
+$m2_nut_h = 1.5;
+
+/* [M3 nut+bolt parameters] */
+// All these need at least a tight fit slack (0.2)
+// on their diameter to make a socket
+
+// Bolt nominal diameter. [mm]
+$m3_body_d = 3.0;
+// Head diameter. [mm]
+$m3_head_d = 5.8;
+// Head height. [mm]
+$m3_head_h = 2.4;
+// Nut diameter across flats. [mm]
+$m3_nut_square = 5.4;
+// Nut diameter across corners. [mm]
+$m3_nut_d = 6.2; // ~= $m3_nut_square / cos(30)
+// Nut height. [mm]
+$m3_nut_h = 2.3;
+
+/* [M4 nut+bolt parameters] */
+// All these need at least a tight fit slack (0.2)
+// on their diameter to make a socket
+
+// Bolt nominal diameter. [mm]
+$m4_body_d = 4.0;
+// Head diameter. [mm]
+$m4_head_d = 8.0;
+// Head height. [mm]
+$m4_head_h = 3.2;
+// Nut diameter across flats. [mm]
+$m4_nut_square = 6.8;
+// Nut diameter across corners. [mm]
+$m4_nut_d = 7.8; // ~= $m4_nut_square / cos(30)
+// Nut height. [mm]
+$m4_nut_h = 3.0;
+
+
+// This module definition is here to stop OpenSCAD/Thingiverse
+// customizer from picking up other parameters that require
+// more care to change.
+module dummy_to_stop_customizer() {}
+
+
+$m2_body_after_nut_safety = $m2_nut_h + 2.0;
+$m3_body_after_nut_safety = $m3_nut_h + 2.0;
+$m4_body_after_nut_safety = $m4_nut_h + 2.0;
+
+
+e=0.01 + 0;
+color_orange=[255/255, 165/255, 0/255];
+
+$fn=30 + 0;
+
 
 //
 // Slacks
@@ -37,15 +125,7 @@ $s4 = 0.4;
 // can't touch
 $s5 = 0.8;
 
-// Parameters of bearing responsible for horizontal rotation of the plate
-$xbearing_inner_d = 50;
-$xbearing_outer_d = 72;
-$xbearing_h = 12;
 
-// Parameters of bearing responsible for vertical rotation of the LIDAR mount
-$ybearing_inner_d = 6;
-$ybearing_outer_d = 13;
-$ybearing_h = 5;
 
 // Tooth numbers for the horizontal gears
 $base_tooth_num = 100;
@@ -100,39 +180,6 @@ $slip_ring_conduit_d = 8;
 
 $lidar_bolts_x=28.6;
 $lidar_bolts_y=27.4;
-
-// M2 nut+bolt parameters
-// All these need at least a tight fit slack (0.2)
-// on their diameter to make a socket
-$m2_body_d = 2.0;
-$m2_head_d = 4;
-$m2_head_h = 1.8;
-$m2_nut_square = 4;
-$m2_nut_d = 4.6; // ~= $m2_nut_square / cos(30)
-$m2_nut_h = 1.5;
-$m2_body_after_nut_safety = $m2_nut_h + 2.0;
-
-// M3 nut+bolt parameters
-// All these need at least a tight fit slack (0.2)
-// on their diameter to make a socket
-$m3_body_d = 3.0;
-$m3_head_d = 5.8;
-$m3_head_h = 2.4;
-$m3_nut_square = 5.4;
-$m3_nut_d = 6.2; // ~= $m3_nut_square / cos(30)
-$m3_nut_h = 2.3;
-$m3_body_after_nut_safety = $m3_nut_h + 2.0;
-
-// M4 nut+bolt parameters
-// All these need at least a tight fit slack (0.2)
-// on their diameter to make a socket
-$m4_body_d = 4.0;
-$m4_head_d = 8.0;
-$m4_head_h = 3.2;
-$m4_nut_square = 6.8;
-$m4_nut_d = 7.8; // ~= $m4_nut_square / cos(30)
-$m4_nut_h = 3.0;
-$m4_body_after_nut_safety = $m4_nut_h + 2.0;
 
 // Bolt lengths
 $bolt_inner_body_len = 25;
